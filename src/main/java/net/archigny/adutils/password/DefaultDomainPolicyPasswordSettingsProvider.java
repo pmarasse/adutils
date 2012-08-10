@@ -16,41 +16,32 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
     /**
      * Logger instance
      */
-    private static final Logger  log               = LoggerFactory.getLogger(DefaultDomainPolicyPasswordSettingsProvider.class);
+    private final Logger     log             = LoggerFactory.getLogger(DefaultDomainPolicyPasswordSettingsProvider.class);
 
     /**
      * Template used to query policy
      */
-    private LdapTemplate         ldapTemplate;
+    private LdapTemplate     ldapTemplate;
 
     /**
      * Timestamp of last query
      */
-    private long                 lastTimeFetched   = 0;
+    private long             lastTimeFetched = 0;
 
     /**
      * Time between two reloads of the policy
      */
-    private long                 refreshInterval   = 86400000L;
+    private long             refreshInterval = 86400000L;
 
     /**
-     * Ldap domain DN to read (eg: dc=example, dc=com), can be empty if
-     * ContextSource has a base DN
+     * Ldap domain DN to read (eg: dc=example, dc=com), can be empty if ContextSource has a base DN <=> domain DN
      */
-    private String               domainDN          = "";
-
-    /**
-     * AD attributes read from password policies
-     */
-    public static final String[] attributesToFetch = { PasswordSettingsMapper.AD_MAXPWDAGE, PasswordSettingsMapper.AD_MINPWDAGE,
-            PasswordSettingsMapper.AD_MINPWDLENGTH, PasswordSettingsMapper.AD_LOCKOUT_DURATION,
-            PasswordSettingsMapper.AD_LOCKOUT_WINDOW, PasswordSettingsMapper.AD_LOCKOUT_THRESOLD,
-            PasswordSettingsMapper.AD_PWD_HISTORY_LENGTH, PasswordSettingsMapper.AD_PWD_PROPERTIES };
+    private String           domainDN        = "";
 
     /**
      * Password settings
      */
-    private PasswordSettings     ps;
+    private PasswordSettings ps;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -85,12 +76,13 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
         if (log.isDebugEnabled()) {
             log.debug("Password policy will be read : " + ((ps == null) ? " it has never been fetched." : "")
                     + ((forceUpdate) ? " Update has been forced." : ""));
-            log.debug("Attributes fetched " + Arrays.toString(attributesToFetch));
+            log.debug("Attributes fetched " + Arrays.toString(PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS));
         }
 
         HashMap<String, PasswordSettings> policies = new HashMap<String, PasswordSettings>();
-        
-        ldapTemplate.lookup(domainDN, attributesToFetch, new PasswordSettingsMapper(policies));
+
+        ldapTemplate.lookup(domainDN, PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS, new PasswordSettingsMapper(policies,
+                PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS));
 
         if (policies.isEmpty()) {
             log.warn("No Policy has been read from LDAP !!");
@@ -118,7 +110,7 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
         }
     }
 
-    public String getBaseDN() {
+    public String getDomainDN() {
 
         return domainDN;
     }

@@ -13,57 +13,159 @@ import org.springframework.ldap.core.DirContextAdapter;
 
 public class PasswordSettingsMapper implements ContextMapper {
 
-    private static Logger      log                             = LoggerFactory.getLogger(PasswordSettingsMapper.class);
+    private Logger                        log                             = LoggerFactory.getLogger(PasswordSettingsMapper.class);
 
     /**
      * Windows password Complexity flag (pwdProperties attribute)
      */
-    public static int          DOMAIN_PASSWORD_COMPLEX         = 1;
+    public static int                     DOMAIN_PASSWORD_COMPLEX         = 1;
 
     /**
-     * The password cannot be changed without logging on. Otherwise, if your
-     * password has expired, you can change your password and then log on.
-     * (pwdProperties attribute)
+     * The password cannot be changed without logging on. Otherwise, if your password has expired, you can change your password and
+     * then log on. (pwdProperties attribute)
      */
-    public static int          DOMAIN_PASSWORD_NO_ANON_CHANGE  = 2;
+    public static int                     DOMAIN_PASSWORD_NO_ANON_CHANGE  = 2;
 
     /**
-     * Allows the built-in administrator account to be locked out from network
-     * logons. (pwdProperties attribute)
+     * Allows the built-in administrator account to be locked out from network logons. (pwdProperties attribute)
      */
-    public static int          DOMAIN_LOCKOUT_ADMINS           = 8;
+    public static int                     DOMAIN_LOCKOUT_ADMINS           = 8;
 
     /**
-     * Forces the client to use a protocol that does not allow the domain
-     * controller to get the plaintext password. (pwdProperties attribute)
+     * Forces the client to use a protocol that does not allow the domain controller to get the plaintext password. (pwdProperties
+     * attribute)
      */
-    public static int          DOMAIN_PASSWORD_STORE_CLEARTEXT = 16;
+    public static int                     DOMAIN_PASSWORD_STORE_CLEARTEXT = 16;
 
     /**
-     * Removes the requirement that the machine account password be
-     * automatically changed every week. This value should not be used as it can
-     * weaken security. (pwdProperties attribute)
+     * Removes the requirement that the machine account password be automatically changed every week. This value should not be used
+     * as it can weaken security. (pwdProperties attribute)
      */
-    public static int          DOMAIN_REFUSE_PASSWORD_CHANGE   = 32;
+    public static int                     DOMAIN_REFUSE_PASSWORD_CHANGE   = 32;
 
-    // AD Attributes list
-    public static final String AD_MAXPWDAGE                    = "maxPwdAge";
-    public static final String AD_MINPWDAGE                    = "minPwdAge";
-    public static final String AD_MINPWDLENGTH                 = "minPwdLength";
-    public static final String AD_LOCKOUT_DURATION             = "lockoutDuration";
-    public static final String AD_LOCKOUT_WINDOW               = "lockoutObservationWindow";
-    public static final String AD_LOCKOUT_THRESOLD             = "lockoutThreshold";
-    public static final String AD_PWD_HISTORY_LENGTH           = "pwdHistoryLength";
-    public static final String AD_PWD_PROPERTIES               = "pwdProperties";
+    /**
+     * Default Domain Policy Attribute : Maximum Password Age in I8 format
+     */
+    public static final String            AD_MAXPWDAGE                    = "maxPwdAge";
 
-    Map<String,PasswordSettings> policies;
-    
+    /**
+     * Default Domain Policy Attribute : Minimum Password Age in I8 format
+     */
+    public static final String            AD_MINPWDAGE                    = "minPwdAge";
+
+    /**
+     * Default Domain Policy Attribute : Minimum password length
+     */
+    public static final String            AD_MINPWDLENGTH                 = "minPwdLength";
+
+    /**
+     * Default Domain Policy Attribute : Account Lockup duration in I8 format
+     */
+    public static final String            AD_LOCKOUT_DURATION             = "lockoutDuration";
+
+    /**
+     * Default Domain Policy Attribute : Lockout Observation Window in I8 format
+     */
+    public static final String            AD_LOCKOUT_WINDOW               = "lockoutObservationWindow";
+
+    /**
+     * Default Domain Policy Attribute : Account Lockout threshold
+     */
+    public static final String            AD_LOCKOUT_THRESHOLD            = "lockoutThreshold";
+
+    /**
+     * Default Domain Policy Attribute : Password history length
+     */
+    public static final String            AD_PWD_HISTORY_LENGTH           = "pwdHistoryLength";
+
+    /**
+     * Default Domain Policy Attribute : Bitmap of password properties
+     */
+    public static final String            AD_PWD_PROPERTIES               = "pwdProperties";
+
+    /**
+     * AD attributes read from Default Domain Policy
+     */
+    public static final String[]          DEFAULT_DOMAIN_POLICY_ATTRS     = { AD_MAXPWDAGE, AD_MINPWDAGE, AD_MINPWDLENGTH,
+            AD_LOCKOUT_DURATION, AD_LOCKOUT_WINDOW, AD_LOCKOUT_THRESHOLD, AD_PWD_HISTORY_LENGTH, AD_PWD_PROPERTIES };
+
+    /**
+     * Password Settings Object Attribute : Maximum Password Age in I8 format
+     */
+    public static final String            AD_PSO_MAXPWDAGE                = "msDS-MaximumPasswordAge";
+
+    /**
+     * Password Settings Object Attribute : Minimum Password Age in I8 format
+     */
+    public static final String            AD_PSO_MINPWDAGE                = "msDS-MinimumPasswordAge";
+
+    /**
+     * Password Settings Object Attribute : Minimum password length
+     */
+    public static final String            AD_PSO_MINPWDLENGTH             = "msDS-MinimumPasswordLength";
+
+    /**
+     * Password Settings Object Attribute : Password history length
+     */
+    public static final String            AD_PSO_PWD_HISTORY_LENGTH       = "msDS-PasswordHistoryLength";
+
+    /**
+     * Password Settings Object Attribute : Password complexity
+     */
+    public static final String            AD_PSO_COMPLEXITY               = "msDS-PasswordComplexityEnabled";
+
+    /**
+     * Password Settings Object Attribute : reversible encryption
+     */
+    public static final String            AD_PSO_REVERSIBLE_ENC           = "msDS-PasswordReversibleEncryptionEnabled";
+
+    /**
+     * Password Settings Object Attribute : Lockout Observation Window in I8 format
+     */
+    public static final String            AD_PSO_LOCKOUT_WINDOW           = "msDS-LockoutObservationWindow";
+
+    /**
+     * Password Settings Object Attribute : Account Lockup duration in I8 format
+     */
+    public static final String            AD_PSO_LOCKOUT_DURATION         = "msDS-LockoutDuration";
+
+    /**
+     * Password Settings Object Attribute : Account Lockout threshold
+     */
+    public static final String            AD_PSO_LOCKOUT_THRESHOLD        = "msDS-LockoutThreshold";
+
+    /**
+     * AD attributes read from Password Settings Objects
+     */
+    public static final String[]          PSO_ATTRS                       = { AD_PSO_MAXPWDAGE, AD_PSO_MINPWDAGE,
+            AD_PSO_MINPWDLENGTH, AD_PSO_PWD_HISTORY_LENGTH, AD_PSO_COMPLEXITY, AD_PSO_REVERSIBLE_ENC, AD_PSO_LOCKOUT_WINDOW,
+            AD_PSO_LOCKOUT_DURATION, AD_PSO_LOCKOUT_THRESHOLD            };
+
+    /**
+     * String representation of boolean false returned by AD
+     */
+    public static final String            LDAP_TRUE_VALUE                 = "TRUE";
+
+    /**
+     * Map of the PSOs, key is PSO's suffix in lower case (cn=xxx)
+     */
+    private Map<String, PasswordSettings> policies;
+
+    /**
+     * Attribute set used used by ldap query (only PSO_ATTRS and DEFAULT_DOMAIN_POLICY_ATTRS are valid)
+     */
+    private String[]                      attributeSet;
+
     /**
      * @param policies
      */
-    public PasswordSettingsMapper(Map<String, PasswordSettings> policies) {
+    public PasswordSettingsMapper(Map<String, PasswordSettings> policies, String[] attributeSet) {
 
-        super();
+        if (PSO_ATTRS == attributeSet || DEFAULT_DOMAIN_POLICY_ATTRS == attributeSet) {
+            this.attributeSet = attributeSet;
+        } else {
+            throw new IllegalArgumentException("attributeSet must be one of DEFAULT_DOMAIN_POLICY_ATTRS or PSO_ATTRS");
+        }
         this.policies = policies;
     }
 
@@ -76,12 +178,10 @@ public class PasswordSettingsMapper implements ContextMapper {
      */
     private long attributeToLong(final DirContextAdapter context, final String attribute) {
 
-        long result;
         Object[] values = context.getObjectAttributes(attribute);
         Object value;
         if ((values != null) && ((value = values[0]) != null)) {
-            result = Long.parseLong((String) value);
-            return result;
+            return Long.parseLong((String) value);
         }
         // Return a value or raise an exception ?
         return 0;
@@ -89,15 +189,23 @@ public class PasswordSettingsMapper implements ContextMapper {
 
     private int attributeToInt(final DirContextAdapter context, final String attribute) {
 
-        int result;
         Object[] values = context.getObjectAttributes(attribute);
         Object value;
         if ((values != null) && ((value = values[0]) != null)) {
-            result = Integer.parseInt((String) value);
-            return result;
+            return Integer.parseInt((String) value);
         }
         // Return a value or raise an exception ?
         return 0;
+    }
+
+    private boolean attributeToBoolean(final DirContextAdapter context, final String attribute) {
+
+        Object[] values = context.getObjectAttributes(attribute);
+        Object value;
+        if ((values != null) && ((value = values[0]) != null)) {
+            return LDAP_TRUE_VALUE.equalsIgnoreCase((String) value);
+        }
+        return false;
     }
 
     @Override
@@ -106,12 +214,12 @@ public class PasswordSettingsMapper implements ContextMapper {
         DirContextAdapter context = (DirContextAdapter) ctx;
 
         Name dn = context.getDn();
-        String name = dn.get(dn.size()-1);
+        String name = dn.get(dn.size() - 1);
 
         if (log.isDebugEnabled()) {
-            log.debug("Context returned : Name = ["+ name + "] Attributes : " + context.getAttributes().toString());
+            log.debug("Context returned : Name = [" + name + "] Attributes : " + context.getAttributes().toString());
         }
-        
+
         long maxPwdAge;
         long minPwdAge;
         int minPwdLength;
@@ -120,23 +228,37 @@ public class PasswordSettingsMapper implements ContextMapper {
         int lockoutThresold;
         int pwdHistoryLength;
         int pwdProperties;
+        boolean complexity = false;
+        boolean reversible = false;
 
         try {
 
-            maxPwdAge = attributeToLong(context, AD_MAXPWDAGE);
-            minPwdAge = attributeToLong(context, AD_MINPWDAGE);
-            minPwdLength = attributeToInt(context, AD_MINPWDLENGTH);
-            lockoutDuration = attributeToLong(context, AD_LOCKOUT_DURATION);
-            lockoutWindow = attributeToLong(context, AD_LOCKOUT_WINDOW);
-            lockoutThresold = attributeToInt(context, AD_LOCKOUT_THRESOLD);
-            pwdHistoryLength = attributeToInt(context, AD_PWD_HISTORY_LENGTH);
-            pwdProperties = attributeToInt(context, AD_PWD_PROPERTIES);
+            if (attributeSet == DEFAULT_DOMAIN_POLICY_ATTRS) {
+                maxPwdAge = attributeToLong(context, AD_MAXPWDAGE);
+                minPwdAge = attributeToLong(context, AD_MINPWDAGE);
+                minPwdLength = attributeToInt(context, AD_MINPWDLENGTH);
+                lockoutDuration = attributeToLong(context, AD_LOCKOUT_DURATION);
+                lockoutWindow = attributeToLong(context, AD_LOCKOUT_WINDOW);
+                lockoutThresold = attributeToInt(context, AD_LOCKOUT_THRESHOLD);
+                pwdHistoryLength = attributeToInt(context, AD_PWD_HISTORY_LENGTH);
+                pwdProperties = attributeToInt(context, AD_PWD_PROPERTIES);
 
-            boolean complexity = (pwdProperties & DOMAIN_PASSWORD_COMPLEX) != 0;
+                complexity = (pwdProperties & DOMAIN_PASSWORD_COMPLEX) != 0;
+            } else {
+                maxPwdAge = attributeToLong(context, AD_PSO_MAXPWDAGE);
+                minPwdAge = attributeToLong(context, AD_PSO_MINPWDAGE);
+                minPwdLength = attributeToInt(context, AD_PSO_MINPWDLENGTH);
+                lockoutDuration = attributeToLong(context, AD_PSO_LOCKOUT_DURATION);
+                lockoutWindow = attributeToLong(context, AD_PSO_LOCKOUT_WINDOW);
+                lockoutThresold = attributeToInt(context, AD_PSO_LOCKOUT_THRESHOLD);
+                pwdHistoryLength = attributeToInt(context, AD_PSO_PWD_HISTORY_LENGTH);
+                complexity = attributeToBoolean(context, AD_PSO_COMPLEXITY);
+                reversible = attributeToBoolean(context, AD_PSO_REVERSIBLE_ENC);
+            }
 
-            policies.put(name, new PasswordSettings(false, pwdHistoryLength, complexity, minPwdLength, minPwdAge, maxPwdAge, lockoutThresold,
-                    lockoutDuration, lockoutWindow));
-            
+            policies.put(name.toLowerCase(), new PasswordSettings(reversible, pwdHistoryLength, complexity, minPwdLength,
+                    minPwdAge, maxPwdAge, lockoutThresold, lockoutDuration, lockoutWindow));
+
         } catch (NumberFormatException e) {
             // Conversion issue, returning null...
         }
