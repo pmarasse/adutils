@@ -29,8 +29,8 @@
 
         <property name="baseEnvironmentProperties">
             <map>
-                <entry key="com.sun.jndi.ldap.connect.timeout" value="100" />
-                <entry key="com.sun.jndi.ldap.read.timeout" value="250" />
+                <entry key="com.sun.jndi.ldap.connect.timeout" value="1000" />
+                <entry key="com.sun.jndi.ldap.read.timeout" value="2500" />
                 <entry key="java.naming.security.authentication" value="simple" />
             </map>
         </property>
