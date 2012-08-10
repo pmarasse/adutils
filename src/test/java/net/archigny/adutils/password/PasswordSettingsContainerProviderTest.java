@@ -101,6 +101,35 @@ public class PasswordSettingsContainerProviderTest {
         assertEquals(5, pso.getHistoryLength());
 
         assertNull(provider.getPasswordSettings(PSO_NON_EXISTENT));
+
+    }
+
+    @Test
+    public void testCache() throws Exception {
+
+        PasswordSettingsContainerProvider provider = new PasswordSettingsContainerProvider();
+        provider.setContextSource(ldapCS);
+        provider.setContainerDN(PasswordSettingsContainerProvider.AD_DEFAULT_CONTAINER_RDN + "," + DOMAIN_DN);
+        provider.setRefreshInterval(500);
+        provider.afterPropertiesSet();
+
+        String psoTestName = PSO_TEST + "," + CONTAINER_DN;
+
+        PasswordSettings pso = provider.getPasswordSettings(psoTestName);
+        assertNotNull(pso);
+
+        long firstFetch = provider.getLastTimeFetched();
+        Thread.sleep(300);
+        
+        pso = provider.getPasswordSettings(psoTestName);
+        long secondFetch = provider.getLastTimeFetched();
+        Thread.sleep(300);
+        
+        pso = provider.getPasswordSettings(psoTestName);
+        long thirdFetch = provider.getLastTimeFetched();
+        
+        assertEquals(firstFetch, secondFetch);
+        assertTrue(thirdFetch > secondFetch);
         
     }
 

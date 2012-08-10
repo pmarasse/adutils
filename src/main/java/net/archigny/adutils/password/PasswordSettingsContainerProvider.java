@@ -180,4 +180,10 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
         return containerDN;
     }
 
+    
+    public long getLastTimeFetched() {
+    
+        return lastTimeFetched;
+    }
+
 }

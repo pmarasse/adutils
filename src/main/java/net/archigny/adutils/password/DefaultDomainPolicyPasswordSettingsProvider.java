@@ -115,4 +115,22 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
         return domainDN;
     }
 
+    
+    
+    public long getRefreshInterval() {
+    
+        return refreshInterval;
+    }
+
+    
+    public void setRefreshInterval(long refreshInterval) {
+    
+        this.refreshInterval = refreshInterval;
+    }
+
+    public long getLastTimeFetched() {
+    
+        return lastTimeFetched;
+    }
+
 }

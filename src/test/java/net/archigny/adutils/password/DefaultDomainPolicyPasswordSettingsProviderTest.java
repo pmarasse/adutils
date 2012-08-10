@@ -30,11 +30,12 @@ public class DefaultDomainPolicyPasswordSettingsProviderTest {
     }
 
     @Test
-    public void testGetPasswordSettings() {
+    public void testGetPasswordSettings() throws Exception {
 
         DefaultDomainPolicyPasswordSettingsProvider provider = new DefaultDomainPolicyPasswordSettingsProvider();
         provider.setContextSource(ldapCS);
         provider.setDomainDN(DOMAIN_DN);
+        provider.afterPropertiesSet();
 
         PasswordSettings ps = provider.getPasswordSettings();
 
@@ -46,5 +47,31 @@ public class DefaultDomainPolicyPasswordSettingsProviderTest {
         assertEquals(6, ps.getMinimumPasswordLength());
         assertEquals(3, ps.getLockoutThreshold());
         assertFalse(ps.isPasswordComplexity());
+    }
+
+    @Test
+    public void testCache() throws Exception {
+
+        DefaultDomainPolicyPasswordSettingsProvider provider = new DefaultDomainPolicyPasswordSettingsProvider();
+        provider.setContextSource(ldapCS);
+        provider.setDomainDN(DOMAIN_DN);
+        provider.setRefreshInterval(500);
+        provider.afterPropertiesSet();
+
+        @SuppressWarnings("unused")
+        PasswordSettings ps = provider.getPasswordSettings();
+        long firstFetch = provider.getLastTimeFetched();
+        Thread.sleep(300);
+        
+        ps = provider.getPasswordSettings();
+        long secondFetch = provider.getLastTimeFetched();
+        Thread.sleep(300);
+        
+        ps = provider.getPasswordSettings();
+        long thirdFetch = provider.getLastTimeFetched();
+
+        assertEquals(firstFetch, secondFetch);
+        assertTrue(thirdFetch > secondFetch);
+
     }
 }
