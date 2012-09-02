@@ -15,7 +15,7 @@ public class PasswordMetaData {
     /**
      * @param lastSet Password Last Set time in I8 format
      */
-    public PasswordMetaData(long lastSet) {
+    public PasswordMetaData(final long lastSet) {
 
         this.lastSet = lastSet;
     }
@@ -41,7 +41,7 @@ public class PasswordMetaData {
      * @param pso Password Settings to apply
      * @return calculated timestamp
      */
-    public long getExpirationTime(PasswordSettings pso) {
+    public long getExpirationTime(final PasswordSettings pso) {
         return I8.convertToEpoch(lastSet - pso.getMaximumPasswordAge());
     }
     

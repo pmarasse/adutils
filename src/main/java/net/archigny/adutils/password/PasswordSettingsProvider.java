@@ -36,7 +36,7 @@ public class PasswordSettingsProvider implements IPasswordSettingsProvider, Init
     public Map<String, PasswordSettings> getAllPasswordSettings() {
 
         // As I don't know if policies have to be refreshed, Creating a new hashmap each time
-        HashMap<String, PasswordSettings> result = new HashMap<String, PasswordSettings>();
+        final HashMap<String, PasswordSettings> result = new HashMap<String, PasswordSettings>();
         result.put(DEFAULT_POLICY, defaultPolicyProvider.getPasswordSettings());
         if (psoContainerProvider != null) {
             result.putAll(psoContainerProvider.getAllPasswordSettings());
@@ -45,7 +45,7 @@ public class PasswordSettingsProvider implements IPasswordSettingsProvider, Init
     }
 
     @Override
-    public PasswordSettings getPasswordSettings(String DN) {
+    public PasswordSettings getPasswordSettings(final String DN) {
 
         PasswordSettings result = null;
         if (psoContainerProvider != null) {
@@ -58,7 +58,7 @@ public class PasswordSettingsProvider implements IPasswordSettingsProvider, Init
     }
 
     @Override
-    public PasswordSettings getPasswordSettings(Name name) {
+    public PasswordSettings getPasswordSettings(final Name name) {
 
         PasswordSettings result = null;
         if (psoContainerProvider != null) {
@@ -78,7 +78,7 @@ public class PasswordSettingsProvider implements IPasswordSettingsProvider, Init
     }
 
     
-    public void setPsoContainerProvider(IPasswordSettingsProvider psoContainerProvider) {
+    public void setPsoContainerProvider(final IPasswordSettingsProvider psoContainerProvider) {
     
         this.psoContainerProvider = psoContainerProvider;
     }
@@ -90,7 +90,7 @@ public class PasswordSettingsProvider implements IPasswordSettingsProvider, Init
     }
 
     
-    public void setDefaultPolicyProvider(IDefaultPasswordSettingsProvider defaultPolicyProvider) {
+    public void setDefaultPolicyProvider(final IDefaultPasswordSettingsProvider defaultPolicyProvider) {
     
         this.defaultPolicyProvider = defaultPolicyProvider;
     }

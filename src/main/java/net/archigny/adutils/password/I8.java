@@ -53,7 +53,7 @@ public final class I8 {
      * @param adTimestamp value to convert
      * @return result of the conversion
      */
-    public static final long convertToEpoch(long adTimestamp) {
+    public static final long convertToEpoch(final long adTimestamp) {
         return (adTimestamp - AD_TO_EPOCH) / AD_TO_TIME_SCALE;
     }
     
@@ -63,7 +63,7 @@ public final class I8 {
      * @param timestamp value to convert
      * @return result of the conversion
      */
-    public static final long convertToI8(long timestamp) {
+    public static final long convertToI8(final long timestamp) {
         return timestamp * AD_TO_TIME_SCALE + AD_TO_EPOCH; 
     }
     

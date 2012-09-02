@@ -159,7 +159,7 @@ public class PasswordSettingsMapper implements ContextMapper {
     /**
      * @param policies
      */
-    public PasswordSettingsMapper(Map<String, PasswordSettings> policies, String[] attributeSet) {
+    public PasswordSettingsMapper(final Map<String, PasswordSettings> policies, final String[] attributeSet) {
 
         if (PSO_ATTRS == attributeSet || DEFAULT_DOMAIN_POLICY_ATTRS == attributeSet) {
             this.attributeSet = attributeSet;
@@ -174,7 +174,7 @@ public class PasswordSettingsMapper implements ContextMapper {
      * 
      * @param context
      * @param attribute
-     * @return
+     * @return parsed string attribute
      */
     private long attributeToLong(final DirContextAdapter context, final String attribute) {
 
@@ -187,6 +187,13 @@ public class PasswordSettingsMapper implements ContextMapper {
         return 0;
     }
 
+    /**
+     * Convert a string attribute to Integer
+     * 
+     * @param context
+     * @param attribute
+     * @return parsed string attribute
+     */
     private int attributeToInt(final DirContextAdapter context, final String attribute) {
 
         Object[] values = context.getObjectAttributes(attribute);
@@ -198,6 +205,13 @@ public class PasswordSettingsMapper implements ContextMapper {
         return 0;
     }
 
+    /**
+     * Convert a string attribute to Boolean
+     * 
+     * @param context
+     * @param attribute
+     * @return parsed string attribute
+     */
     private boolean attributeToBoolean(final DirContextAdapter context, final String attribute) {
 
         Object[] values = context.getObjectAttributes(attribute);
@@ -209,16 +223,14 @@ public class PasswordSettingsMapper implements ContextMapper {
     }
 
     @Override
-    public Object mapFromContext(Object ctx) {
+    public Object mapFromContext(final Object ctx) {
 
-        DirContextAdapter context = (DirContextAdapter) ctx;
+        final DirContextAdapter context = (DirContextAdapter) ctx;
 
-        Name dn = context.getDn();
-        String name = dn.get(dn.size() - 1);
+        final Name dn = context.getDn();
+        final String name = dn.get(dn.size() - 1);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Context returned : Name = [" + name + "] Attributes : " + context.getAttributes().toString());
-        }
+        log.debug("Context returned : Name = [{}] Attributes : {}", name, context.getAttributes().toString());
 
         long maxPwdAge;
         long minPwdAge;
