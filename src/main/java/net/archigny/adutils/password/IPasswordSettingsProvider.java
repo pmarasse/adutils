@@ -21,7 +21,7 @@ public interface IPasswordSettingsProvider {
      *            String representation of PSO Distinguished Name
      * @return Corresponding PSO or null
      */
-    public PasswordSettings getPasswordSettings(String DN);
+    public PasswordSettings getPasswordSettings(final String DN);
 
     /**
      * Lookup a password settings object from a javax.Name value taking the
@@ -31,5 +31,5 @@ public interface IPasswordSettingsProvider {
      *            PSO's Distinguished Name
      * @return Correspondinf PSO or null
      */
-    public PasswordSettings getPasswordSettings(Name name);
+    public PasswordSettings getPasswordSettings(final Name name);
 }

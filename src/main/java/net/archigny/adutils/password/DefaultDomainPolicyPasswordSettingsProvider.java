@@ -76,7 +76,7 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
         if (log.isDebugEnabled()) {
             log.debug("Password policy will be read : " + ((ps == null) ? " it has never been fetched." : "")
                     + ((forceUpdate) ? " Update has been forced." : ""));
-            log.debug("Attributes fetched " + Arrays.toString(PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS));
+            log.debug("Attributes fetched {}", Arrays.toString(PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS));
         }
 
         HashMap<String, PasswordSettings> policies = new HashMap<String, PasswordSettings>();
@@ -98,12 +98,12 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
 
     // Setters & Getters
 
-    public void setContextSource(ContextSource cs) {
+    public void setContextSource(final ContextSource cs) {
 
         this.ldapTemplate = new LdapTemplate(cs);
     }
 
-    public void setDomainDN(String domainDN) {
+    public void setDomainDN(final String domainDN) {
 
         if (domainDN != null) {
             this.domainDN = domainDN;
@@ -123,7 +123,7 @@ public final class DefaultDomainPolicyPasswordSettingsProvider implements IDefau
     }
 
     
-    public void setRefreshInterval(long refreshInterval) {
+    public void setRefreshInterval(final long refreshInterval) {
     
         this.refreshInterval = refreshInterval;
     }

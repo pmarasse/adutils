@@ -80,23 +80,23 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
     }
 
     @Override
-    public PasswordSettings getPasswordSettings(String DN) {
+    public PasswordSettings getPasswordSettings(final String DN) {
 
         try {
             return getPasswordSettings(new DistinguishedName(DN));
         } catch (BadLdapGrammarException e) {
-            log.warn("Unable to parse LDAP DN : [" + DN + "]. Returning null");
+            log.warn("Unable to parse LDAP DN : [{}]. Returning null", DN);
             return null;
         }
 
     }
 
     @Override
-    public PasswordSettings getPasswordSettings(Name name) {
+    public PasswordSettings getPasswordSettings(final Name name) {
 
         if (!name.isEmpty()) {
             updatePasswordSettings(false);
-            String suffix = name.get(name.size() - 1).toLowerCase();
+            final String suffix = name.get(name.size() - 1).toLowerCase();
             return policies.get(suffix);
         }
         return null;
@@ -119,7 +119,7 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
      * 
      * @return true if fetch has really been done
      */
-    private synchronized boolean updatePasswordSettings(boolean forceUpdate) {
+    private synchronized boolean updatePasswordSettings(final boolean forceUpdate) {
 
         if ((System.currentTimeMillis() <= lastTimeFetched + refreshInterval) && !forceUpdate && (!policies.isEmpty())) {
             return false;
@@ -128,13 +128,13 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
         if (log.isDebugEnabled()) {
             log.debug("Password policy will be read : " + ((policies.isEmpty()) ? " it has never been fetched." : "")
                     + ((forceUpdate) ? " Update has been forced." : ""));
-            log.debug("LDAP filter used : " + filter);
-            log.debug("Attributes fetched " + Arrays.toString(PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS));
+            log.debug("LDAP filter used : {}", filter);
+            log.debug("Attributes fetched {}", Arrays.toString(PasswordSettingsMapper.DEFAULT_DOMAIN_POLICY_ATTRS));
         }
 
-        HashMap<String, PasswordSettings> policies = new HashMap<String, PasswordSettings>();
+        final HashMap<String, PasswordSettings> policies = new HashMap<String, PasswordSettings>();
 
-        SearchControls sc = new SearchControls();
+        final SearchControls sc = new SearchControls();
         sc.setSearchScope(SearchControls.ONELEVEL_SCOPE);
         sc.setReturningObjFlag(true);
         sc.setReturningAttributes(PasswordSettingsMapper.PSO_ATTRS);
@@ -155,12 +155,12 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
 
     // Setters & Getters
 
-    public void setContextSource(ContextSource cs) {
+    public void setContextSource(final ContextSource cs) {
 
         this.ldapTemplate = new LdapTemplate(cs);
     }
 
-    public void setRefreshInterval(long refreshInterval) {
+    public void setRefreshInterval(final long refreshInterval) {
 
         this.refreshInterval = refreshInterval;
     }
@@ -170,7 +170,7 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
         return refreshInterval;
     }
 
-    public void setContainerDN(String containerDN) {
+    public void setContainerDN(final String containerDN) {
 
         this.containerDN = containerDN;
     }
@@ -180,9 +180,8 @@ public final class PasswordSettingsContainerProvider implements InitializingBean
         return containerDN;
     }
 
-    
     public long getLastTimeFetched() {
-    
+
         return lastTimeFetched;
     }
 

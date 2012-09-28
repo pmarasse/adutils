@@ -1,8 +1,7 @@
 package net.archigny.adutils.password;
 
 /**
- * POJO representing a Password Settings Object (PSO) for fine grained passwords
- * of Active Directory (since AD2008)
+ * POJO representing a Password Settings Object (PSO) for fine grained passwords of Active Directory (since AD2008)
  * 
  * voir : http://technet.microsoft.com/en-us/library/cc770842%28v=ws.10%29
  * 
@@ -14,57 +13,55 @@ public final class PasswordSettings {
     /**
      * True if password will be stored with a reversible encryption mechanism
      */
-    private boolean          reversibleEncryption;
+    private boolean reversibleEncryption;
 
     /**
-     * 0 : no password history 1-1024 : length of password history to be kept by
-     * AD
+     * 0 : no password history 1-1024 : length of password history to be kept by AD
      */
-    private int              historyLength;
+    private int     historyLength;
 
     /**
      * True if password complexity is enabled
      */
-    private boolean          passwordComplexity;
+    private boolean passwordComplexity;
 
     /**
      * Minimum password lenght in characters
      */
-    private int              minimumPasswordLength;
+    private int     minimumPasswordLength;
 
     /**
      * Minimum password age in I8 format
      */
-    private long             minimumPasswordAge;
+    private long    minimumPasswordAge;
 
     /**
      * Maximum password age in I8 format
      */
-    private long             maximumPasswordAge;
+    private long    maximumPasswordAge;
 
     /**
      * Maximum password tries before locking an account in I8 format
      */
-    private int              lockoutThreshold;
+    private int     lockoutThreshold;
 
     /**
      * Lockout duration for locked out user accounts in I8 format
      */
-    private long             lockoutDuration;
+    private long    lockoutDuration;
 
     /**
      * Observation Window for lockout of user accounts in I8 format
      */
-    private long             lockoutObservationWindow;
+    private long    lockoutObservationWindow;
 
     /**
      * Are attributes satisfying referential integrity
      */
-    private boolean          valid  = false;
+    private boolean valid = false;
 
     /**
-     * Validate attributes referential integrity
-     * voir : http://technet.microsoft.com/en-us/library/cc753858%28v=ws.10%29.aspx
+     * Validate attributes referential integrity voir : http://technet.microsoft.com/en-us/library/cc753858%28v=ws.10%29.aspx
      */
     private synchronized boolean validate() {
 
@@ -91,9 +88,9 @@ public final class PasswordSettings {
     /**
      * Creates an instance with all parameters.
      */
-    public PasswordSettings(boolean reversibleEncryption, int historyLength, boolean passwordComplexity, int minimumPasswordLength,
-            long minimumPasswordAge, long maximumPasswordAge, int lockoutThreshold, long lockoutDuration,
-            long lockoutObservationWindow) {
+    public PasswordSettings(final boolean reversibleEncryption, final int historyLength, final boolean passwordComplexity,
+            final int minimumPasswordLength, final long minimumPasswordAge, final long maximumPasswordAge,
+            final int lockoutThreshold, final long lockoutDuration, final long lockoutObservationWindow) {
 
         this.reversibleEncryption = reversibleEncryption;
         this.historyLength = historyLength;
@@ -114,7 +111,7 @@ public final class PasswordSettings {
         return reversibleEncryption;
     }
 
-    public void setReversibleEncryption(boolean reversibleEncryption) {
+    public void setReversibleEncryption(final boolean reversibleEncryption) {
 
         this.reversibleEncryption = reversibleEncryption;
     }
@@ -124,7 +121,7 @@ public final class PasswordSettings {
         return historyLength;
     }
 
-    public void setHistoryLength(int historyLength) {
+    public void setHistoryLength(final int historyLength) {
 
         this.historyLength = historyLength;
     }
@@ -134,7 +131,7 @@ public final class PasswordSettings {
         return passwordComplexity;
     }
 
-    public void setPasswordComplexity(boolean passwordComplexity) {
+    public void setPasswordComplexity(final boolean passwordComplexity) {
 
         this.passwordComplexity = passwordComplexity;
     }
@@ -144,7 +141,7 @@ public final class PasswordSettings {
         return minimumPasswordLength;
     }
 
-    public void setMinimumPasswordLength(int minimumPasswordLength) {
+    public void setMinimumPasswordLength(final int minimumPasswordLength) {
 
         this.minimumPasswordLength = minimumPasswordLength;
     }
@@ -154,7 +151,7 @@ public final class PasswordSettings {
         return minimumPasswordAge;
     }
 
-    public void setMinimumPasswordAge(long minimumPasswordAge) {
+    public void setMinimumPasswordAge(final long minimumPasswordAge) {
 
         this.minimumPasswordAge = minimumPasswordAge;
         validate();
@@ -165,7 +162,7 @@ public final class PasswordSettings {
         return maximumPasswordAge;
     }
 
-    public void setMaximumPasswordAge(long maximumPasswordAge) {
+    public void setMaximumPasswordAge(final long maximumPasswordAge) {
 
         this.maximumPasswordAge = maximumPasswordAge;
         validate();
@@ -176,7 +173,7 @@ public final class PasswordSettings {
         return lockoutThreshold;
     }
 
-    public void setLockoutThreshold(int lockoutThreshold) {
+    public void setLockoutThreshold(final int lockoutThreshold) {
 
         this.lockoutThreshold = lockoutThreshold;
     }
@@ -186,7 +183,7 @@ public final class PasswordSettings {
         return lockoutDuration;
     }
 
-    public void setLockoutDuration(long lockoutDuration) {
+    public void setLockoutDuration(final long lockoutDuration) {
 
         this.lockoutDuration = lockoutDuration;
         validate();
@@ -197,7 +194,7 @@ public final class PasswordSettings {
         return lockoutObservationWindow;
     }
 
-    public void setLockoutObservationWindow(long lockoutObservationWindow) {
+    public void setLockoutObservationWindow(final long lockoutObservationWindow) {
 
         this.lockoutObservationWindow = lockoutObservationWindow;
         validate();

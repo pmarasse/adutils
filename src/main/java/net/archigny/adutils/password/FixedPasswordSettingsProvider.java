@@ -31,47 +31,47 @@ public final class FixedPasswordSettingsProvider implements IDefaultPasswordSett
 
     // Setters & Getters
 
-    public void setReversibleEncryption(boolean reversibleEncryption) {
+    public void setReversibleEncryption(final boolean reversibleEncryption) {
 
         ps.setReversibleEncryption(reversibleEncryption);
     }
 
-    public void setHistoryLength(int historyLength) {
+    public void setHistoryLength(final int historyLength) {
 
         ps.setHistoryLength(historyLength);
     }
 
-    public void setPasswordComplexity(boolean passwordComplexity) {
+    public void setPasswordComplexity(final boolean passwordComplexity) {
 
         ps.setPasswordComplexity(passwordComplexity);
     }
 
-    public void setMinimumPasswordLength(int minimumPasswordLength) {
+    public void setMinimumPasswordLength(final int minimumPasswordLength) {
 
         ps.setMinimumPasswordLength(minimumPasswordLength);
     }
 
-    public void setMinimumPasswordAge(long minimumPasswordAge) {
+    public void setMinimumPasswordAge(final long minimumPasswordAge) {
 
         ps.setMinimumPasswordAge(minimumPasswordAge);
     }
 
-    public void setMaximumPasswordAge(long maximumPasswordAge) {
+    public void setMaximumPasswordAge(final long maximumPasswordAge) {
 
         ps.setMaximumPasswordAge(maximumPasswordAge);
     }
 
-    public void setLockoutThreshold(int lockoutThreshold) {
+    public void setLockoutThreshold(final int lockoutThreshold) {
 
         ps.setLockoutThreshold(lockoutThreshold);
     }
 
-    public void setLockoutDuration(long lockoutDuration) {
+    public void setLockoutDuration(final long lockoutDuration) {
 
         ps.setLockoutDuration(lockoutDuration);
     }
 
-    public void setLockoutObservationWindow(long lockoutObservationWindow) {
+    public void setLockoutObservationWindow(final long lockoutObservationWindow) {
 
         ps.setLockoutObservationWindow(lockoutObservationWindow);
     }
