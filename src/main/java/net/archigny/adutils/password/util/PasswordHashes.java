@@ -1,5 +1,6 @@
 package net.archigny.adutils.password.util;
 
+import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
@@ -25,7 +26,8 @@ import javax.crypto.spec.DESKeySpec;
 public final class PasswordHashes {
 
     /**
-     * The magic number used to compute the Lan Manager hashed password : KGS!@#$%
+     * The magic number used to compute the Lan Manager hashed password :
+     * KGS!@#$%
      */
     public static final byte[] MAGIC = new byte[] { 0x4B, 0x47, 0x53, 0x21, 0x40, 0x23, 0x24, 0x25 };
 
@@ -34,9 +36,10 @@ public final class PasswordHashes {
      * Converts an unsigned byte to an unsigned integer.
      * </p>
      * <p>
-     * Notice that Java bytes are always signed, but the cryptographic algorithms rely on unsigned ones, that can be simulated in
-     * this way.<br>
-     * A bit mask is employed to prevent that the signum bit is extended to MSBs.
+     * Notice that Java bytes are always signed, but the cryptographic
+     * algorithms rely on unsigned ones, that can be simulated in this way.<br>
+     * A bit mask is employed to prevent that the signum bit is extended to
+     * MSBs.
      * </p>
      */
     private static int unsignedByteToInt(byte b) {
@@ -44,31 +47,18 @@ public final class PasswordHashes {
         return (int) b & 0xFF;
     }
 
-    private static byte getLoByte(char c) {
-
-        return (byte) c;
-    }
-
-    private static byte getHiByte(char c) {
-
-        return (byte) ((c >>> 8) & 0xFF);
-    }
-
-    private static short swapBytes(short s) {
-
-        return (short) (((s << 8) & 0xFF00) | ((s >>> 8) & 0x00FF));
-    }
-
     /**
      * <p>
      * Computes an odd DES key from 56 bits represented as a 7-bytes array.
      * </p>
      * <p>
-     * Keeps elements from index <code>offset</code> to index <code>offset + 7</code> of supplied array.
+     * Keeps elements from index <code>offset</code> to index
+     * <code>offset + 7</code> of supplied array.
      * </p>
      * 
      * @param keyData
-     *            a byte array containing the 56 bits used to compute the DES key
+     *            a byte array containing the 56 bits used to compute the DES
+     *            key
      * @param offset
      *            the offset of the first element of the 56-bits key data
      * 
@@ -106,53 +96,33 @@ public final class PasswordHashes {
     }
 
     /**
-     * Encrypts the 8-bytes plain text three times with the 3 56-bits DES keys and puts the result in a 24-bytes array.
-     * 
-     * @param keys
-     *            a 21-bytes array containing 3 56-bits DES keys
-     * @param plaintext
-     *            a 8-bytes array to be encrypted
-     * 
-     * @return a 24-bytes array containing the plaintext DES encrypted with the supplied keys
-     * 
-     * @exception InvalidKeyException
-     * @exception NoSuchAlgorithmException
-     * @exception javax.crypto.NoSuchPaddingException
-     * @exception InvalidKeySpecException
-     * @exception BadPaddingException
-     * @exception IllegalBlockSizeException
-     * @exception ShortBufferException
-     */
-    private static byte[] encrypt(byte[] keys, byte[] plaintext) throws InvalidKeyException, NoSuchAlgorithmException,
-            javax.crypto.NoSuchPaddingException, InvalidKeySpecException, BadPaddingException, IllegalBlockSizeException,
-            ShortBufferException {
-
-        byte[] ciphertext = new byte[24];
-        Cipher c = Cipher.getInstance("DES/ECB/NoPadding");
-        Key k = computeDESKey(keys, 0);
-        c.init(Cipher.ENCRYPT_MODE, k);
-        c.doFinal(plaintext, 0, 8, ciphertext, 0);
-        k = computeDESKey(keys, 7);
-        c.init(Cipher.ENCRYPT_MODE, k);
-        c.doFinal(plaintext, 0, 8, ciphertext, 8);
-        k = computeDESKey(keys, 14);
-        c.init(Cipher.ENCRYPT_MODE, k);
-        c.doFinal(plaintext, 0, 8, ciphertext, 16);
-        return ciphertext;
-    }
-
-    /**
-     * Convertit un tableau d'octets en chaine hexa affichable
+     * Converts a byte[] to a lower cased hexadecimal String
      * 
      * @param bytes
      *            [] le tableau à convertir
      * @return String la chaîne convertie en héxadécimal, en minuscules.
      */
-    public static String getHexString(byte[] bytes) {
+    public static String getLowerCaseHexString(byte[] bytes) {
 
         StringBuilder sb = new StringBuilder(bytes.length * 2);
         for (byte b : bytes) {
             sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Converts a byte[] to a upper cased hexadecimal String
+     * 
+     * @param bytes
+     *            [] le tableau à convertir
+     * @return String la chaîne convertie en héxadécimal, en minuscules.
+     */
+    public static String getUpperCaseHexString(byte[] bytes) {
+
+        StringBuilder sb = new StringBuilder(bytes.length * 2);
+        for (byte b : bytes) {
+            sb.append(String.format("%02X", b));
         }
         return sb.toString();
     }
@@ -163,22 +133,22 @@ public final class PasswordHashes {
      * @param password
      *            the user password
      * 
-     * @return the Lan Manager hashed version of the password in a 16-bytes array
+     * @return the Lan Manager hashed version of the password in a 16-bytes
+     *         array
      * 
-     * @exception IllegalArgumentException
-     *                if the supplied password is null
-     * @exception javax.crypto.NoSuchPaddingException
-     *                if there isn't any suitable padding method
-     * @exception NoSuchAlgorithmException
-     *                if there isn't any suitable cipher algorithm
+     * @exception HashComputingException
+     *                if a problem is detected during computation
      */
     public static byte[] computeLMPassword(String password) throws IllegalArgumentException, HashComputingException {
 
-        if (password == null) throw new IllegalArgumentException("password : null value not allowed");
+        if (password == null)
+            throw new IllegalArgumentException("password : null value not allowed");
+        
         try {
             // Gets the first 14-bytes of the ASCII upper cased password
             int len = password.length();
-            if (len > 14) len = 14;
+            if (len > 14)
+                len = 14;
             Cipher c = Cipher.getInstance("DES/ECB/NoPadding");
 
             byte[] lm_pw = new byte[14];
@@ -193,10 +163,12 @@ public final class PasswordHashes {
             // Builds a first DES key with its first 7 bytes
             Key k = computeDESKey(lm_pw, 0);
             c.init(Cipher.ENCRYPT_MODE, k);
-            // Hashes the MAGIC number with this key into the first 8 bytes of the result
+            // Hashes the MAGIC number with this key into the first 8 bytes of
+            // the result
             c.doFinal(MAGIC, 0, 8, lm_hpw, 0);
 
-            // Repeats the work with the last 7 bytes to gets the last 8 bytes of the result
+            // Repeats the work with the last 7 bytes to gets the last 8 bytes
+            // of the result
             k = computeDESKey(lm_pw, 7);
             c.init(Cipher.ENCRYPT_MODE, k);
             c.doFinal(MAGIC, 0, 8, lm_hpw, 8);
@@ -219,10 +191,32 @@ public final class PasswordHashes {
         }
     }
 
-    public static String computeLMPasswordAsString(String password) {
+    /**
+     * Computes the Lan Manager hashed version of a password as a lower cased
+     * String
+     * 
+     * @param password
+     *            passowrd to be hashed
+     * @return Hexadecimal string of LM Hash
+     */
+    public static String computeLMPasswordAsLowerCaseString(String password) {
 
         byte[] rawHash = computeLMPassword(password);
-        return rawHash == null ? null : getHexString(rawHash);
+        return rawHash == null ? null : getLowerCaseHexString(rawHash);
+    }
+
+    /**
+     * Computes the Lan Manager hashed version of a password as a upper cased
+     * String
+     * 
+     * @param password
+     *            passowrd to be hashed
+     * @return Hexadecimal string of LM Hash
+     */
+    public static String computeLMPasswordAsUpperCaseString(String password) {
+
+        byte[] rawHash = computeLMPassword(password);
+        return rawHash == null ? null : getUpperCaseHexString(rawHash);
     }
 
     /**
@@ -233,22 +227,22 @@ public final class PasswordHashes {
      * 
      * @return the NT hashed version of the password in a 16-bytes array
      * 
-     * @exception IllegalArgumentException
-     *                if the supplied password is null
-     * @exception NoSuchAlgorithmException
-     *                if there isn't any suitable cipher algorithm
+     * @exception HashComputingException
+     *                if a problem is detected during computation
      */
     public static byte[] computeNTPassword(String password) throws IllegalArgumentException, HashComputingException {
 
-        if (password == null) throw new IllegalArgumentException("password : null value not allowed");
+        if (password == null)
+            throw new IllegalArgumentException("password : null value not allowed");
         // Gets the first 14-bytes of the UNICODE password
         int len = password.length();
-        if (len > 14) len = 14;
+        if (len > 14)
+            len = 14;
         byte[] nt_pw = new byte[2 * len];
         for (int i = 0; i < len; i++) {
             char ch = password.charAt(i);
-            nt_pw[2 * i] = getLoByte(ch);
-            nt_pw[2 * i + 1] = getHiByte(ch);
+            nt_pw[2 * i] = (byte) ch;
+            nt_pw[2 * i + 1] = (byte) ((ch >>> 8) & 0xFF);
         }
 
         // Return its MD4 digest as the hashed version
@@ -256,10 +250,27 @@ public final class PasswordHashes {
         return md.digest(nt_pw);
     }
 
-    public static String computeNTPasswordAsString(String password) {
+    /**
+     * Computes the NT hashed version of a password as a lower cased String
+     * 
+     * @param password
+     * @return Hashed password as a lower case hexadecimal string
+     */
+    public static String computeNTPasswordAsLowerCaseString(String password) {
 
         byte[] rawHash = computeNTPassword(password);
-        return rawHash == null ? null : getHexString(rawHash);
+        return rawHash == null ? null : getLowerCaseHexString(rawHash);
     }
 
+    /**
+     * Computes the NT hashed version of a password as a upper cased String
+     * 
+     * @param password
+     * @return Hashed password as a lower case hexadecimal string
+     */
+    public static String computeNTPasswordAsUpperCaseString(String password) {
+
+        byte[] rawHash = computeNTPassword(password);
+        return rawHash == null ? null : getUpperCaseHexString(rawHash);
+    }
 }
