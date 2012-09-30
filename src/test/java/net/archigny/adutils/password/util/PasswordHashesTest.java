@@ -2,12 +2,7 @@ package net.archigny.adutils.password.util;
 
 import static org.junit.Assert.*;
 
-import java.security.Provider;
-import java.security.Provider.Service;
-import java.security.Security;
 import java.util.Arrays;
-import java.util.Set;
-
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +20,9 @@ public class PasswordHashesTest {
 
     public final static String  PW1_NT_AS_STRING = "8CD722FACF1BB9DAB8D9B1307B536217";
 
+    public final static byte[]  PW1_NT_AS_BYTEA  = { (byte) 0x8C, (byte) 0xD7, 0x22, (byte) 0xFA, (byte) 0xCF, 0x1B, (byte) 0xB9,
+            (byte) 0xDA, (byte) 0xB8, (byte) 0xD9, (byte) 0xB1, 0x30, 0x7B, 0x53, 0x62, 0x17 };
+
     @Test
     public void LMTest() {
 
@@ -38,7 +36,9 @@ public class PasswordHashesTest {
     @Test
     public void NTTest() {
 
-        Provider[] providers = Security.getProviders();
+/* Liste les providers pour vérifier que MD4 **n'est pas** dans la liste !!
+ * 
+ *         Provider[] providers = Security.getProviders();
         for (Provider provider : providers) {
             log.info(provider.getInfo());
             Set<Service> services = provider.getServices();
@@ -46,7 +46,8 @@ public class PasswordHashesTest {
                 log.info(" => " + service.getAlgorithm());
             }
         }
-
+*/
+        assertTrue(Arrays.equals(PW1_NT_AS_BYTEA, PasswordHashes.computeNTPassword(PW1_CLEARTEST)));
         assertEquals(PW1_NT_AS_STRING, PasswordHashes.computeNTPasswordAsString(PW1_CLEARTEST).toUpperCase());
     }
 

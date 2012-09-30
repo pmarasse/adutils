@@ -252,12 +252,7 @@ public final class PasswordHashes {
         }
 
         // Return its MD4 digest as the hashed version
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("MD4");
-        } catch (NoSuchAlgorithmException e) {
-            throw new HashComputingException("NoSuchAlgorithmException during Hash computation", e);
-        }
+        MessageDigest md = new MD4();
         return md.digest(nt_pw);
     }
 
